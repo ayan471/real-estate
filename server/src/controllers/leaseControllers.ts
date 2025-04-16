@@ -1,6 +1,5 @@
-import { PrismaClient } from "@prisma/client";
-import { wktToGeoJSON } from "@terraformer/wkt";
 import { Request, Response } from "express";
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -27,14 +26,12 @@ export const getLeasePayments = async (
   try {
     const { id } = req.params;
     const payments = await prisma.payment.findMany({
-      where: {
-        leaseId: Number(id),
-      },
+      where: { leaseId: Number(id) },
     });
     res.json(payments);
   } catch (error: any) {
     res
       .status(500)
-      .json({ message: `Error retrieving lease  payments: ${error.message}` });
+      .json({ message: `Error retrieving lease payments: ${error.message}` });
   }
 };

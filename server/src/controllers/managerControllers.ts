@@ -1,6 +1,6 @@
+import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 import { wktToGeoJSON } from "@terraformer/wkt";
-import { Request, Response } from "express";
 
 const prisma = new PrismaClient();
 
@@ -13,6 +13,7 @@ export const getManager = async (
     const manager = await prisma.manager.findUnique({
       where: { cognitoId },
     });
+
     if (manager) {
       res.json(manager);
     } else {
@@ -31,6 +32,7 @@ export const createManager = async (
 ): Promise<void> => {
   try {
     const { cognitoId, name, email, phoneNumber } = req.body;
+
     const manager = await prisma.manager.create({
       data: {
         cognitoId,
@@ -39,6 +41,7 @@ export const createManager = async (
         phoneNumber,
       },
     });
+
     res.status(201).json(manager);
   } catch (error: any) {
     res
@@ -78,7 +81,6 @@ export const getManagerProperties = async (
 ): Promise<void> => {
   try {
     const { cognitoId } = req.params;
-
     const properties = await prisma.property.findMany({
       where: { managerCognitoId: cognitoId },
       include: {

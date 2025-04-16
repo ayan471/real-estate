@@ -1,6 +1,6 @@
+import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 import { wktToGeoJSON } from "@terraformer/wkt";
-import { Request, Response } from "express";
 
 const prisma = new PrismaClient();
 
@@ -13,6 +13,7 @@ export const getTenant = async (req: Request, res: Response): Promise<void> => {
         favorites: true,
       },
     });
+
     if (tenant) {
       res.json(tenant);
     } else {
@@ -31,6 +32,7 @@ export const createTenant = async (
 ): Promise<void> => {
   try {
     const { cognitoId, name, email, phoneNumber } = req.body;
+
     const tenant = await prisma.tenant.create({
       data: {
         cognitoId,
@@ -39,6 +41,7 @@ export const createTenant = async (
         phoneNumber,
       },
     });
+
     res.status(201).json(tenant);
   } catch (error: any) {
     res
@@ -78,7 +81,6 @@ export const getCurrentResidences = async (
 ): Promise<void> => {
   try {
     const { cognitoId } = req.params;
-
     const properties = await prisma.property.findMany({
       where: { tenants: { some: { cognitoId } } },
       include: {
